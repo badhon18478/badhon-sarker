@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+@plugin "daisyui";
+/* App.css - Night Mode Support */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+
+@tailwind utilities;
+
+:root {
+  /* Default variables - light theme */
+  --background: 250 250 252;
+  --foreground: 15 23 42;
+  /* ... rest of light theme variables */
+}
+
+.dark {
+  --background: 15 23 42;
+  --foreground: 248 250 252;
+  /* ... rest of dark theme variables */
+}
+
+.night {
+  --background: 10 10 20;
+  --foreground: 230 230 255;
+  /* ... rest of night theme variables */
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
