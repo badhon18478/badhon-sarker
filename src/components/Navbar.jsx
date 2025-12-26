@@ -175,46 +175,7 @@ export default function Navbar() {
               );
             })}
 
-            {/* Search - Enhanced */}
-            {/* <div className="relative ml-4" ref={searchRef}>
-              <motion.button
-                whileHover={{ scale: 1.05, rotate: 90 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setSearchOpen(prev => !prev)}
-                className="p-3 rounded-2xl text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10 hover:shadow-lg shadow-cyan-500/20 border border-transparent hover:border-cyan-500/30 transition-all backdrop-blur-sm"
-              >
-                <Search size={20} />
-              </motion.button>
-
-              {searchOpen && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                  className="absolute right-0 mt-3 w-96 bg-slate-900/95 backdrop-blur-3xl border border-cyan-500/20 rounded-3xl shadow-2xl shadow-cyan-500/10"
-                >
-                  <div className="p-4">
-                    <input
-                      ref={el => el?.focus()}
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      placeholder="🔍 Search projects, skills, experience..."
-                      className="w-full px-5 py-4 bg-slate-800/50 border border-cyan-500/20 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 transition-all text-sm font-medium"
-                    />
-                  </div>
-                  {searchQuery && (
-                    <div className="px-4 pb-4">
-                      <p className="text-xs text-cyan-400 font-mono">
-                        {searchQuery.length}{' '}
-                        {searchQuery.length === 1 ? 'result' : 'results'} found
-                      </p>
-                    </div>
-                  )}
-                </motion.div>
-              )}
-            </div> */}
-
-            {/* Theme Toggle - Premium */}
+            {/* Theme Toggle - Premium (এখন Hire Me button এর আগে) */}
             <motion.button
               whileHover={{ scale: 1.1, rotate: 180 }}
               whileTap={{ scale: 0.95 }}
@@ -240,7 +201,7 @@ export default function Navbar() {
               )}
             </motion.button>
 
-            {/* Premium CTA */}
+            {/* Premium CTA (এখন Theme Toggle এর পরে) */}
             <motion.button
               whileHover={{
                 scale: 1.05,
@@ -249,7 +210,7 @@ export default function Navbar() {
               }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/contact')}
-              className="ml-4 px-8 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 hover:from-cyan-600 hover:via-blue-600 hover:to-purple-700 text-white font-bold rounded-3xl shadow-2xl shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-500 ring-2 ring-cyan-500/40 backdrop-blur-sm"
+              className="ml-2 px-8 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 hover:from-cyan-600 hover:via-blue-600 hover:to-purple-700 text-white font-bold rounded-3xl shadow-2xl shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-500 ring-2 ring-cyan-500/40 backdrop-blur-sm"
             >
               <span className="flex items-center gap-2">
                 <Zap size={18} className="animate-pulse" />
@@ -317,6 +278,49 @@ export default function Navbar() {
               );
             })}
 
+            {/* Mobile Theme Toggle Button */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => {
+                const themes = ['light', 'dark', 'night'];
+                setTheme(themes[(themes.indexOf(theme) + 1) % 3]);
+              }}
+              className="w-full flex items-center justify-between p-5 rounded-3xl font-semibold text-base text-slate-300 hover:text-white hover:bg-yellow-500/15 hover:shadow-xl hover:shadow-yellow-500/20 border border-transparent hover:border-yellow-500/30 transition-all duration-300"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-11 h-11 rounded-2xl bg-slate-800/50 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:bg-yellow-500/20 transition-all">
+                  {theme === 'night' ? (
+                    <MoonStar
+                      size={22}
+                      className="group-hover:scale-110 transition-transform"
+                    />
+                  ) : theme === 'dark' ? (
+                    <Moon
+                      size={22}
+                      className="group-hover:scale-110 transition-transform"
+                    />
+                  ) : (
+                    <Sun
+                      size={22}
+                      className="group-hover:scale-110 transition-transform"
+                    />
+                  )}
+                </div>
+                <span className="font-bold tracking-wide">
+                  {theme === 'dark'
+                    ? 'Dark Mode'
+                    : theme === 'night'
+                    ? 'Night Mode'
+                    : 'Light Mode'}
+                </span>
+              </div>
+              <ChevronDown
+                size={20}
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+              />
+            </motion.button>
+
             {/* Mobile CTA */}
             <motion.button
               whileHover={{ scale: 1.02, y: -2 }}
@@ -325,7 +329,7 @@ export default function Navbar() {
                 navigate('/contact');
                 setOpen(false);
               }}
-              className="w-full mt-6 px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 hover:from-cyan-600 hover:via-blue-600 hover:to-purple-700 text-white font-bold text-lg rounded-3xl shadow-2xl shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-500 ring-2 ring-cyan-500/40 backdrop-blur-sm"
+              className="w-full mt-2 px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 hover:from-cyan-600 hover:via-blue-600 hover:to-purple-700 text-white font-bold text-lg rounded-3xl shadow-2xl shadow-cyan-500/30 hover:shadow-cyan-500/50 transition-all duration-500 ring-2 ring-cyan-500/40 backdrop-blur-sm"
             >
               <span className="flex items-center justify-center gap-3">
                 <Zap size={20} className="animate-pulse" />

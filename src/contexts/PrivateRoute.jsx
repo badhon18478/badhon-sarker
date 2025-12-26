@@ -22,3 +22,44 @@ const PrivateRoute = ({ children }) => {
 };
 
 export default PrivateRoute;
+
+// Home.jsx
+import React, { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import {
+  Download,
+  ArrowRight,
+  Code2,
+  Zap,
+  Sparkles,
+  CheckCircle,
+  Star,
+  Target,
+  Users,
+  Clock,
+  Award,
+  TrendingUp,
+  Globe,
+  Cpu,
+  Database,
+  Server,
+  GitBranch,
+  Cloud,
+  Shield,
+  Rocket,
+  User,
+  Twitter,
+  Linkedin,
+  Facebook,
+  Github,
+  FileText,
+  MessageSquare,
+  ExternalLink,
+  Layers,
+  Circle,
+  Briefcase,
+  Terminal,
+  Box,
+} from 'lucide-react';
+import bgImg from '../../../assets/image.png';
+import { useTheme } from '../../../contexts/ThemeContext'; // Import theme context
