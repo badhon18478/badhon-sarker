@@ -1,202 +1,210 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import emailjs from 'emailjs-com';
-import {
-  Send,
-  Mail,
-  Phone,
-  MapPin,
-  CheckCircle,
-  Loader2,
-  MessageSquare,
-  Sparkles,
-  AlertCircle,
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
+import { Send, Mail, MessageSquare, Sparkles, Loader2 } from 'lucide-react';
 
 const Contact = () => {
-  const formRef = useRef();
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(null);
+  const [formData, setFormData] = useState({
+    from_name: '',
+    from_email: '',
+    message: '',
+  });
+
+  // ✅ EmailJS Configuration
+  const EMAILJS_CONFIG = {
+    SERVICE_ID: 'service_d200kul',
+    TEMPLATE_ID: 'template_8pebt6y',
+    PUBLIC_KEY: 'y-L_7djOy6nE2E1vK',
+    TO_EMAIL: 'badhonsarker1844@gmail.com',
+  };
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
-    setStatus(null);
-
-    // নিচের ৩টি জিনিস আপনার EmailJS ড্যাশবোর্ড থেকে কপি করে বসান
-    const SERVICE_ID = 'YOUR_SERVICE_ID';
-    const TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-    const PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
 
     try {
-      const result = await emailjs.sendForm(
-        SERVICE_ID,
-        TEMPLATE_ID,
-        formRef.current,
-        PUBLIC_KEY
+      const templateParams = {
+        from_name: formData.from_name,
+        from_email: formData.from_email,
+        to_email: EMAILJS_CONFIG.TO_EMAIL,
+        message: formData.message,
+        date: new Date().toLocaleString(),
+      };
+
+      // Send email without showing any alerts or errors
+      await emailjs.send(
+        EMAILJS_CONFIG.SERVICE_ID,
+        EMAILJS_CONFIG.TEMPLATE_ID,
+        templateParams,
+        EMAILJS_CONFIG.PUBLIC_KEY
       );
 
-      if (result.status === 200) {
-        setStatus('success');
-        e.target.reset();
-      }
+      // Silent success - no alerts, no notifications
+      // Just reset the form
+      setFormData({
+        from_name: '',
+        from_email: '',
+        message: '',
+      });
     } catch (error) {
-      console.error('EmailJS Error:', error);
-      setStatus('error');
+      // Silent error - no alerts, no error messages shown to user
+      console.log('Email sending failed silently');
     } finally {
       setLoading(false);
-      setTimeout(() => setStatus(null), 5000);
     }
   };
 
   return (
-    <section className="min-h-screen bg-white text-slate-900 py-20 px-4 font-sans">
-      <div className="max-w-6xl mx-auto">
+    <section className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-blue-50 text-gray-900 py-20 px-4 md:px-8">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-full mb-4 border border-blue-100"
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 px-6 py-3 rounded-full mb-6 border border-blue-200 shadow-sm"
           >
-            <Sparkles className="w-4 h-4" />
-            <span className="text-xs font-bold uppercase tracking-widest">
-              Get In Touch
+            <Mail className="w-5 h-5" />
+            <span className="text-sm font-bold uppercase tracking-widest">
+              Email Contact
             </span>
           </motion.div>
-          <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-6">
-            Let's Start a <span className="text-blue-600">Conversation</span>
-          </h2>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-4xl md:text-6xl font-black mb-6"
+          >
+            Send Me an{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              Email
+            </span>
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto"
+          >
+            আপনার মেসেজ সরাসরি আমার Email এ পাঠানো হবে
+          </motion.p>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-8 items-stretch">
-          {/* Contact Info Cards */}
-          <div className="lg:col-span-4 space-y-4">
-            <ContactCard
-              icon={<Mail className="text-blue-600" />}
-              title="Email Me"
-              detail="badhonsarker1844@gmail.com"
-              link="mailto:yourname@gmail.com"
-            />
-            <ContactCard
-              icon={<Phone className="text-green-600" />}
-              title="Call Me"
-              detail="+880 17XX-XXXXXX"
-              link="tel:+8801700000000"
-            />
-            <ContactCard
-              icon={<MapPin className="text-red-600" />}
-              title="Location"
-              detail="Dhaka, Bangladesh"
-            />
+        {/* Contact Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-3xl p-8 md:p-10 shadow-xl"
+        >
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-3 bg-gradient-to-r from-blue-100 to-purple-100 rounded-xl">
+              <MessageSquare className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800">
+                Send Email Message
+              </h3>
+              <p className="text-gray-600">
+                Fill the form below to send direct email
+              </p>
+            </div>
           </div>
 
-          {/* Form Side */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-8 bg-gray-50 border border-gray-200 p-8 md:p-12 rounded-[2rem] shadow-sm"
-          >
-            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">
-                    Full Name
-                  </label>
-                  <input
-                    name="from_name"
-                    type="text"
-                    required
-                    placeholder="John Doe"
-                    className="w-full bg-white border border-gray-300 rounded-xl px-5 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-slate-700 ml-1">
-                    Email Address
-                  </label>
-                  <input
-                    name="from_email"
-                    type="email"
-                    required
-                    placeholder="john@example.com"
-                    className="w-full bg-white border border-gray-300 rounded-xl px-5 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 ml-1">
-                  Message
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                  <span>Your Name</span>
+                  <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  name="message"
-                  rows="5"
+                <input
+                  name="from_name"
+                  type="text"
                   required
-                  placeholder="How can I help you?"
-                  className="w-full bg-white border border-gray-300 rounded-xl px-5 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none"
+                  value={formData.from_name}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  className="w-full bg-white border border-gray-300 rounded-xl px-5 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
                 />
               </div>
 
-              <button
-                disabled={loading}
-                className="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold py-5 rounded-xl flex items-center justify-center gap-3 transition-all active:scale-[0.98] disabled:opacity-70"
-              >
-                {loading ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  <Send size={20} />
-                )}
-                {loading ? 'SENDING...' : 'SEND MESSAGE'}
-              </button>
+              <div className="space-y-3">
+                <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                  <span>Your Email</span>
+                  <span className="text-red-500">*</span>
+                </label>
+                <input
+                  name="from_email"
+                  type="email"
+                  required
+                  value={formData.from_email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
+                  className="w-full bg-white border border-gray-300 rounded-xl px-5 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400"
+                />
+              </div>
+            </div>
 
-              <AnimatePresence>
-                {status === 'success' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="p-4 rounded-xl bg-green-50 text-green-700 border border-green-200 flex items-center gap-2"
-                  >
-                    <CheckCircle size={20} /> Message Sent! Check your Gmail
-                    now.
-                  </motion.div>
-                )}
-                {status === 'error' && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="p-4 rounded-xl bg-red-50 text-red-700 border border-red-200 flex items-center gap-2"
-                  >
-                    <AlertCircle size={20} /> Failed to send. Please check your
-                    EmailJS IDs.
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </form>
-          </motion.div>
-        </div>
+            <div className="space-y-3">
+              <label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                <span>Your Message</span>
+                <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                name="message"
+                rows="6"
+                required
+                value={formData.message}
+                onChange={handleChange}
+                placeholder="Tell me about your project, ideas, or questions..."
+                className="w-full bg-white border border-gray-300 rounded-xl px-5 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all placeholder-gray-400 resize-none"
+              />
+            </div>
+
+            <motion.button
+              type="submit"
+              disabled={loading}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-5 rounded-xl flex items-center justify-center gap-3 transition-all disabled:opacity-70 shadow-lg hover:shadow-xl"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>SENDING...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5" />
+                  <span>SEND EMAIL</span>
+                </>
+              )}
+            </motion.button>
+
+            <div className="pt-4 border-t border-gray-200">
+              <p className="text-sm text-gray-600 text-center">
+                By submitting, this message will be sent directly to{' '}
+                {EMAILJS_CONFIG.TO_EMAIL}
+              </p>
+            </div>
+          </form>
+        </motion.div>
       </div>
     </section>
   );
 };
-
-const ContactCard = ({ icon, title, detail, link }) => (
-  <a
-    href={link}
-    className="block p-6 bg-white border border-gray-200 rounded-2xl hover:border-blue-500 hover:shadow-md transition-all group"
-  >
-    <div className="flex items-center gap-4">
-      <div className="p-3 bg-gray-50 rounded-xl group-hover:bg-blue-50 transition-colors">
-        {icon}
-      </div>
-      <div>
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-          {title}
-        </p>
-        <p className="text-lg font-bold text-slate-800">{detail}</p>
-      </div>
-    </div>
-  </a>
-);
 
 export default Contact;

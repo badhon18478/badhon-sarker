@@ -265,25 +265,55 @@ const Home = () => {
         : 'from-orange-500 via-amber-600 to-yellow-500',
     },
   ];
-
   const projects = [
     {
-      title: 'E-Commerce Platform',
+      title: 'Ticket Bari',
       description:
-        'Full-featured marketplace with real-time inventory, payment processing, and AI recommendations',
-      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe', 'Redis'],
-      gradient: darkMode
-        ? 'from-cyan-500 to-blue-600'
-        : 'from-cyan-500 via-blue-600 to-indigo-500',
+        'Online ticket booking platform with user authentication, seat selection, and secure payment system',
+      technologies: [
+        'React',
+        'Node.js',
+        'Express',
+        'MongoDB',
+        'Firebase Auth',
+        'Stripe',
+      ],
+      gradient: 'from-purple-500 to-indigo-600',
     },
     {
-      title: 'Real-Time Analytics Dashboard',
+      title: 'Authentication System',
       description:
-        'Live data visualization platform processing millions of events per second',
-      technologies: ['Vue.js', 'Socket.io', 'PostgreSQL', 'D3.js'],
-      gradient: darkMode
-        ? 'from-green-500 to-emerald-600'
-        : 'from-emerald-500 via-teal-600 to-green-600',
+        'Complete authentication solution with email/password login, Google sign-in, profile update, and password reset',
+      technologies: ['React', 'Firebase Authentication', 'Context API', 'JWT'],
+      gradient: 'from-pink-500 to-rose-600',
+    },
+    {
+      title: 'Real-Time Chat Application',
+      description:
+        'Realtime messaging app with Socket.io, online status, and instant message delivery',
+      technologies: ['React', 'Node.js', 'Socket.io', 'MongoDB', 'Express'],
+      gradient: 'from-cyan-500 to-blue-600',
+    },
+    {
+      title: 'Admin Dashboard',
+      description:
+        'Role-based admin panel with user management, analytics, and protected routes',
+      technologies: ['React', 'Firebase', 'Node.js', 'MongoDB', 'Chart.js'],
+      gradient: 'from-emerald-500 to-green-600',
+    },
+    {
+      title: 'REST API Server',
+      description:
+        'Scalable REST API with MongoDB, Firebase Admin SDK, and JWT authentication',
+      technologies: ['Node.js', 'Express', 'MongoDB', 'Firebase Admin', 'JWT'],
+      gradient: 'from-orange-500 to-amber-600',
+    },
+    {
+      title: 'TypeScript Web Application',
+      description:
+        'Modern TypeScript-based frontend project deployed to Netlify',
+      technologies: ['TypeScript', 'React', 'Vite', 'Netlify'],
+      gradient: 'from-sky-500 to-blue-700',
     },
   ];
 
