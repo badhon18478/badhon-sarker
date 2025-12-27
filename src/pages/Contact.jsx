@@ -22,9 +22,9 @@ const Contact = () => {
   });
 
   // ✅ EmailJS Configuration - Get these from https://www.emailjs.com/
-  const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';
-  const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-  const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';
+  const EMAILJS_SERVICE_ID = 'service_d200kul';
+  const EMAILJS_TEMPLATE_ID = 'template_y3t732f';
+  const EMAILJS_PUBLIC_KEY = 'y-L_7djOy6nE2E1vK';
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -133,8 +133,8 @@ const Contact = () => {
             <ContactCard
               icon={<Phone className="text-blue-400" size={24} />}
               title="Phone"
-              detail="+880 1797-618448"
-              link="tel:+8801797618448"
+              detail="+8801738670618"
+              link="tel:+8801738670618"
             />
             <ContactCard
               icon={<MapPin className="text-purple-400" size={24} />}
@@ -274,7 +274,7 @@ const Contact = () => {
         </div>
 
         {/* Info Box */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -329,7 +329,7 @@ const Contact = () => {
               <span>Replace the 3 IDs in the code above ☝️</span>
             </li>
           </ol>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

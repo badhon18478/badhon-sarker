@@ -9,8 +9,6 @@ import {
   Heart,
   MessageSquare,
   Users,
-  Award,
-  Clock,
   Upload,
   X,
 } from 'lucide-react';
@@ -33,7 +31,7 @@ const FeedbackCard = ({ feedback, formatDate }) => (
     className="bg-slate-800/50 backdrop-blur rounded-xl p-5 border border-slate-700/50 hover:border-cyan-500/50 transition-all"
   >
     <div className="flex items-start gap-4 mb-3">
-      <div className="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+      <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-r from-cyan-500 to-purple-600">
         <Users className="w-6 h-6 text-white" />
       </div>
       <div className="flex-1">
@@ -90,7 +88,7 @@ const Feedback = () => {
   const [uploading, setUploading] = useState(false);
 
   const API_URL = 'https://badhon-server.vercel.app/api';
-  const IMGBB_API_KEY = '9fa3cb8e4f87f22580c3c32954a7c123';
+  const IMGBB_API_KEY = '8bdb22e2166ad898f266634f8cbeae01';
 
   const showNotification = useCallback((message, type) => {
     setNotification({ message, type });
@@ -100,16 +98,14 @@ const Feedback = () => {
   const fetchFeedbacks = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/feedback?limit=10`);
+      const response = await fetch(`${API_URL}/feedback?limit=50`);
       const data = await response.json();
+
       if (data.success) {
-        // Only show approved feedback
-        const approvedFeedbacks = data.data.filter(
-          f => f.status === 'approved'
-        );
-        setFeedbacks(approvedFeedbacks);
+        setFeedbacks(data.data || []);
       }
     } catch (error) {
+      console.error('Fetch feedbacks error:', error);
       showNotification('Failed to load feedbacks', 'error');
     } finally {
       setLoading(false);
@@ -120,6 +116,7 @@ const Feedback = () => {
     try {
       const response = await fetch(`${API_URL}/feedback/stats`);
       const data = await response.json();
+      console.log('Stats data:', data); // Debug log
       if (data.success) setStats(data.data);
     } catch (error) {
       console.error('Stats error:', error);
@@ -129,19 +126,24 @@ const Feedback = () => {
   useEffect(() => {
     fetchFeedbacks();
     fetchStats();
+
+    const interval = setInterval(() => {
+      fetchFeedbacks();
+      fetchStats();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, [fetchFeedbacks, fetchStats]);
 
   const handleImageUpload = async e => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       showNotification('Image size should be less than 5MB', 'error');
       return;
     }
 
-    // Check file type
     if (!file.type.startsWith('image/')) {
       showNotification('Please upload a valid image file', 'error');
       return;
@@ -153,7 +155,7 @@ const Feedback = () => {
 
     try {
       const response = await fetch(
-        `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
+        `https://api.imgbb.com/1/upload?expiration=600&key=${IMGBB_API_KEY}`,
         {
           method: 'POST',
           body: formData,
@@ -200,34 +202,50 @@ const Feedback = () => {
 
     setSubmitting(true);
     try {
+      // সরাসরি প্রকাশ করার জন্য isApproved: true দিচ্ছি
+      const payload = {
+        name: name.trim(),
+        email: email.trim(),
+        message: message.trim(),
+        rating,
+        image: image || '',
+        status: 'approved',
+        isApproved: true,
+      };
+
+      console.log('Submitting feedback:', payload);
+
       const response = await fetch(`${API_URL}/feedback`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.trim(),
-          message: message.trim(),
-          rating,
-          image: image || '',
-          status: 'pending',
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await response.json();
 
       if (data.success) {
-        showNotification(
-          'Feedback submitted! It will appear after approval.',
-          'success'
-        );
+        showNotification('Feedback submitted successfully!', 'success');
+
+        // Form reset
         setFormData({ name: '', email: '', message: '', rating: 5, image: '' });
         setImagePreview(null);
-        fetchFeedbacks();
+
+        // সাথে সাথে নতুন feedback যোগ করছি UI তে
+        const newFeedback = {
+          ...payload,
+          _id: data.data?._id || Date.now().toString(),
+          createdAt: new Date().toISOString(),
+        };
+
+        setFeedbacks(prev => [newFeedback, ...prev]);
+
+        // Stats আপডেট
         fetchStats();
       } else {
         showNotification(data.message || 'Submission failed', 'error');
       }
     } catch (error) {
+      console.error('Submit error:', error);
       showNotification('Network error. Please try again.', 'error');
     } finally {
       setSubmitting(false);
@@ -240,6 +258,19 @@ const Feedback = () => {
       month: 'short',
       day: 'numeric',
     });
+  };
+
+  // সব feedbacks গুলোকে date অনুযায়ী সাজানো (নতুন থেকে পুরাতন)
+  const sortedFeedbacks = [...feedbacks].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
+  // averageRating কে number এ convert করার function
+  const getAverageRating = () => {
+    if (!stats || !stats.averageRating) return '0.0';
+
+    const rating = parseFloat(stats.averageRating);
+    return isNaN(rating) ? '0.0' : rating.toFixed(1);
   };
 
   return (
@@ -264,14 +295,22 @@ const Feedback = () => {
         {/* Stats */}
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-            <StatCard label="Total" value={stats.approved} icon={Users} />
+            <StatCard label="Total" value={stats.total || 0} icon={Users} />
             <StatCard
-              label="Rating"
-              value={`${stats.averageRating?.toFixed(1) || 0}/5`}
+              label="Average Rating"
+              value={`${getAverageRating()}/5`}
               icon={Star}
             />
-            <StatCard label="Satisfaction" value="100%" icon={Award} />
-            <StatCard label="Pending" value={stats.pending} icon={Clock} />
+            <StatCard
+              label="Latest"
+              value={sortedFeedbacks.length}
+              icon={MessageSquare}
+            />
+            <StatCard
+              label="Today"
+              value={new Date().getDate()}
+              icon={CheckCircle}
+            />
           </div>
         )}
 
@@ -448,34 +487,41 @@ const Feedback = () => {
                 {submitting ? (
                   <>
                     <Loader className="animate-spin w-5 h-5" />
-                    <span>Submitting...</span>
+                    <span>Posting...</span>
                   </>
                 ) : (
                   <>
                     <Send size={18} />
-                    <span>Submit Feedback</span>
+                    <span>Post Feedback</span>
                   </>
                 )}
               </button>
             </div>
           </div>
 
-          {/* Feedback List */}
+          {/* সব Feedbacks List (সরাসরি প্রকাশিত) */}
           <div className="md:col-span-3">
             <div className="flex items-center gap-3 mb-4">
-              <MessageSquare className="w-6 h-6 text-purple-400" />
-              <h2 className="text-2xl font-bold text-white">Recent Feedback</h2>
+              <MessageSquare className="w-6 h-6 text-cyan-400" />
+              <h2 className="text-2xl font-bold text-white">
+                Recent Feedbacks
+              </h2>
               <span className="ml-auto text-lg font-bold text-cyan-400">
-                {feedbacks.length}
+                {sortedFeedbacks.length}
               </span>
             </div>
 
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-20 bg-slate-800/30 rounded-xl border border-slate-700/30">
-                <Loader className="animate-spin text-cyan-400 w-12 h-12 mb-4" />
-                <p className="text-slate-400">Loading feedback...</p>
+            {sortedFeedbacks.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
+                {sortedFeedbacks.map((f, i) => (
+                  <FeedbackCard
+                    key={f._id || i}
+                    feedback={f}
+                    formatDate={formatDate}
+                  />
+                ))}
               </div>
-            ) : feedbacks.length === 0 ? (
+            ) : !loading ? (
               <div className="flex flex-col items-center justify-center py-20 bg-slate-800/30 rounded-xl border border-slate-700/30 text-center">
                 <MessageSquare className="w-16 h-16 text-cyan-400 mb-4" />
                 <h3 className="text-2xl font-bold text-white mb-2">
@@ -486,14 +532,9 @@ const Feedback = () => {
                 </p>
               </div>
             ) : (
-              <div className="grid gap-4 max-h-[700px] overflow-y-auto pr-2 custom-scrollbar">
-                {feedbacks.map((f, i) => (
-                  <FeedbackCard
-                    key={f._id || i}
-                    feedback={f}
-                    formatDate={formatDate}
-                  />
-                ))}
+              <div className="flex flex-col items-center justify-center py-20 bg-slate-800/30 rounded-xl border border-slate-700/30">
+                <Loader className="animate-spin text-cyan-400 w-12 h-12 mb-4" />
+                <p className="text-slate-400">Loading feedback...</p>
               </div>
             )}
           </div>
