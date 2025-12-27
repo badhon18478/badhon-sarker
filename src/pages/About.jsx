@@ -1,5 +1,6 @@
 import { Code2, Coffee, Lightbulb, Rocket } from 'lucide-react';
 import { motion } from 'framer-motion';
+import image from '../assets/i.png';
 
 const values = [
   {
@@ -49,7 +50,7 @@ const About = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-4xl md:text-5xl lg:text-5xl font-black mb-8 leading-tight"
+            className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-tight"
           >
             <span className="text-white">&lt;</span>
             <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500 bg-clip-text text-transparent ml-2">
@@ -66,14 +67,19 @@ const About = () => {
             animate={{ opacity: 1, x: 0 }}
             className="relative"
           >
-            <div className="w-full aspect-square max-w-md mx-auto rounded-4xl bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-purple-600/20 p-2 border border-cyan-500/30 shadow-2xl shadow-cyan-500/20 backdrop-blur-xl">
-              <div className="w-full h-full rounded-4xl bg-slate-950/80 backdrop-blur-2xl border border-slate-800/50 flex items-center justify-center shadow-2xl shadow-slate-900/30">
-                <div className="text-center p-12">
-                  <div className="text-8xl mb-6 animate-pulse">👨‍💻</div>
-                  <p className="text-slate-400 font-mono text-lg tracking-wide">
-                    Your Photo Here
-                  </p>
-                </div>
+            <div className="w-full aspect-[4/3] max-w-md mx-auto rounded-4xl bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-purple-600/20 p-2 border border-cyan-500/30 shadow-2xl shadow-cyan-500/20 backdrop-blur-xl overflow-hidden group">
+              <div className="w-full h-full rounded-4xl bg-slate-950/80 backdrop-blur-2xl border border-slate-800/50 shadow-2xl shadow-slate-900/30 relative overflow-hidden">
+                {/* ✅ PERFECT RESPONSIVE IMAGE */}
+                <img
+                  className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                  src={image}
+                  alt="About Me"
+                  loading="lazy"
+                />
+                {/* Loading fallback */}
+                {/* <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 to-slate-950/90 flex items-center justify-center backdrop-blur-sm z-10">
+                  <div className="text-6xl animate-pulse">👨‍💻</div>
+                </div> */}
               </div>
             </div>
             <motion.div
