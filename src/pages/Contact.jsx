@@ -10,6 +10,7 @@ import {
   AlertCircle,
   Sparkles,
   MessageSquare,
+  Smartphone,
 } from 'lucide-react';
 
 const Contact = () => {
@@ -21,7 +22,10 @@ const Contact = () => {
     message: '',
   });
 
-  // ✅ EmailJS Configuration - Get these from https://www.emailjs.com/
+  // WhatsApp Number
+  const WHATSAPP_NUMBER = '8801738670618';
+
+  // EmailJS Configuration
   const EMAILJS_SERVICE_ID = 'service_d200kul';
   const EMAILJS_TEMPLATE_ID = 'template_y3t732f';
   const EMAILJS_PUBLIC_KEY = 'y-L_7djOy6nE2E1vK';
@@ -53,9 +57,10 @@ const Contact = () => {
             template_id: EMAILJS_TEMPLATE_ID,
             user_id: EMAILJS_PUBLIC_KEY,
             template_params: {
-              from_name: formData.name,
-              from_email: formData.email,
+              name: formData.name,
+              email: formData.email,
               message: formData.message,
+
               to_email: 'badhonsarker1844@gmail.com',
             },
           }),
@@ -76,6 +81,8 @@ const Contact = () => {
       setTimeout(() => setStatus(null), 5000);
     }
   };
+
+  const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Badhon,%20I%20want%20to%20connect%20with%20you`;
 
   return (
     <section className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white py-20 px-4 md:px-8 lg:px-12">
@@ -116,6 +123,39 @@ const Contact = () => {
           </motion.p>
         </div>
 
+        {/* WhatsApp Quick Contact Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="mb-12"
+        >
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full max-w-2xl mx-auto"
+          >
+            <motion.div
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              className="p-6 bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 hover:from-green-700 hover:via-green-600 hover:to-emerald-700 rounded-2xl shadow-2xl shadow-green-500/30 hover:shadow-green-500/50 transition-all border-2 border-green-400/40"
+            >
+              <div className="flex items-center justify-center gap-4">
+                <Smartphone className="w-8 h-8 text-white" />
+                <div className="text-center">
+                  <p className="text-xl font-black text-white">
+                    Message on WhatsApp
+                  </p>
+                  <p className="text-sm text-green-100/90">
+                    Quick response - Chat directly
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </a>
+        </motion.div>
+
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Contact Info Cards */}
           <motion.div
@@ -133,7 +173,7 @@ const Contact = () => {
             <ContactCard
               icon={<Phone className="text-blue-400" size={24} />}
               title="Phone"
-              detail="+8801738670618"
+              detail="+880 1738-670618"
               link="tel:+8801738670618"
             />
             <ContactCard
@@ -157,10 +197,10 @@ const Contact = () => {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-white">
-                    Send Message
+                    Send Message via Email
                   </h3>
                   <p className="text-slate-400">
-                    Fill out the form and I'll get back to you
+                    I'll get back to you within 24 hours
                   </p>
                 </div>
               </div>
@@ -262,7 +302,7 @@ const Contact = () => {
                       <div>
                         <p className="font-bold">Failed to Send</p>
                         <p className="text-sm text-red-400/80">
-                          Please check EmailJS configuration.
+                          Please try WhatsApp instead or check your connection.
                         </p>
                       </div>
                     </motion.div>
@@ -272,64 +312,6 @@ const Contact = () => {
             </div>
           </motion.div>
         </div>
-
-        {/* Info Box */}
-        {/* <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 p-6 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-600/10 border-2 border-cyan-500/30 rounded-2xl backdrop-blur-sm"
-        >
-          <h4 className="font-bold text-cyan-300 mb-3 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5" />
-            Quick Setup Guide:
-          </h4>
-          <ol className="space-y-2 text-slate-400 text-sm">
-            <li className="flex gap-2">
-              <span className="text-cyan-400 font-bold">1.</span>
-              <span>
-                Sign up at{' '}
-                <a
-                  href="https://www.emailjs.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-cyan-400 hover:underline"
-                >
-                  emailjs.com
-                </a>{' '}
-                with{' '}
-                <strong className="text-white">
-                  badhonsarker1844@gmail.com
-                </strong>
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-cyan-400 font-bold">2.</span>
-              <span>
-                Add Gmail service and get your{' '}
-                <strong className="text-white">Service ID</strong>
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-cyan-400 font-bold">3.</span>
-              <span>
-                Create email template and get{' '}
-                <strong className="text-white">Template ID</strong>
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-cyan-400 font-bold">4.</span>
-              <span>
-                Copy <strong className="text-white">Public Key</strong> from
-                Account settings
-              </span>
-            </li>
-            <li className="flex gap-2">
-              <span className="text-cyan-400 font-bold">5.</span>
-              <span>Replace the 3 IDs in the code above ☝️</span>
-            </li>
-          </ol>
-        </motion.div> */}
       </div>
     </section>
   );
