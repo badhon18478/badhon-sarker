@@ -38,6 +38,8 @@ import {
   Sun,
 } from 'lucide-react';
 import bgImg from '../../../assets/image.png';
+import { Link } from 'react-router';
+// import SkillsBento from '../../../components/SkillsBento';
 
 const Home = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -441,7 +443,7 @@ const Home = () => {
                 transition={{ delay: 0.3 }}
                 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight"
               >
-                <span className="block">Building</span>
+                <span className="block">Hi, Iam</span>
                 <span
                   className={`block animate-gradient-x ${
                     darkMode
@@ -449,7 +451,7 @@ const Home = () => {
                       : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-500 bg-clip-text text-transparent'
                   }`}
                 >
-                  Digital Magic
+                  Badhon Sarker
                 </span>
               </motion.h1>
 
@@ -495,9 +497,9 @@ const Home = () => {
                       : 'border-2 border-cyan-400/50 hover:bg-cyan-500/10 hover:border-cyan-500/70 text-cyan-600 hover:text-cyan-700'
                   }`}
                 >
-                  <span className="flex items-center gap-3">
+                  <Link to="/contact" className="flex items-center gap-3">
                     Let's Talk <MessageSquare size={20} />
-                  </span>
+                  </Link>
                 </motion.button>
               </div>
 
@@ -754,7 +756,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-
+      {/* <SkillsBento></SkillsBento> */}
       {/* Projects Section */}
       <section className="relative py-32 px-4 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto relative z-10">
@@ -1033,10 +1035,10 @@ const Home = () => {
                   whileTap={{ scale: 0.95 }}
                   className="px-8 py-4 border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-sm"
                 >
-                  <span className="flex items-center gap-3">
+                  <Link to="/contact" className="flex items-center gap-3">
                     Start a Project
                     <ArrowRight />
-                  </span>
+                  </Link>
                 </motion.button>
               </div>
             </div>

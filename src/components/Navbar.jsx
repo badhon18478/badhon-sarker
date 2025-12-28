@@ -98,7 +98,7 @@ export default function Navbar() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/')}
-            className="flex items-center gap-3 group relative overflow-hidden p-2 -m-2 rounded-2xl hover:bg-cyan-500/10 transition-all backdrop-blur-sm"
+            className="flex items-center justify-center gap-3 group relative overflow-hidden p-2 -m-2 rounded-2xl hover:bg-cyan-500/10 transition-all backdrop-blur-sm"
           >
             <div className="relative">
               <motion.div
@@ -110,7 +110,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            <div className="hidden sm:block min-w-0">
+            {/* <div className="hidden sm:block min-w-0">
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -128,13 +128,13 @@ export default function Navbar() {
                 transition={{ delay: 0.2 }}
                 className="text-xs lg:text-sm text-cyan-300/80 font-medium mt-1 tracking-wide"
               >
-                {/* Full Stack Developer */}
+              
               </motion.div>
-            </div>
+            </div> */}
           </motion.button>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1.5">
+          <div className="hidden lg:flex items-center justify-center gap-1.5">
             {routes.map((route, index) => {
               const Icon = route.icon;
               return (
