@@ -27,14 +27,13 @@ const Contact = () => {
 
   // EmailJS Configuration
   const EMAILJS_SERVICE_ID = 'service_d200kul';
-  const EMAILJS_TEMPLATE_ID = 'template_y3t732f';
+  const EMAILJS_TEMPLATE_ID = 'template_10pzmf7';
   const EMAILJS_PUBLIC_KEY = 'y-L_7djOy6nE2E1vK';
 
   const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-
   const handleSubmit = async e => {
     e.preventDefault();
 
@@ -47,34 +46,43 @@ const Contact = () => {
     setStatus(null);
 
     try {
+      const emailData = {
+        service_id: EMAILJS_SERVICE_ID,
+        template_id: EMAILJS_TEMPLATE_ID,
+        user_id: EMAILJS_PUBLIC_KEY,
+        template_params: {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+          to_email: 'badhonsarker1844@gmail.com',
+          reply_to: formData.email,
+        },
+      };
+
+      console.log('📤 Sending Email:', emailData);
+
       const response = await fetch(
         'https://api.emailjs.com/api/v1.0/email/send',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            service_id: EMAILJS_SERVICE_ID,
-            template_id: EMAILJS_TEMPLATE_ID,
-            user_id: EMAILJS_PUBLIC_KEY,
-            template_params: {
-              name: formData.name,
-              email: formData.email,
-              message: formData.message,
-
-              to_email: 'badhonsarker1844@gmail.com',
-            },
-          }),
+          body: JSON.stringify(emailData),
         }
       );
 
+      console.log('📥 Response Status:', response.status);
+      console.log('📥 Response OK:', response.ok);
+
       if (response.ok) {
+        console.log('✅ Email sent successfully');
         setStatus('success');
         setFormData({ name: '', email: '', message: '' });
       } else {
+        console.error('❌ Email failed:', await response.text());
         setStatus('error');
       }
     } catch (error) {
-      console.error('EmailJS Error:', error);
+      console.error('❌ Network Error:', error);
       setStatus('error');
     } finally {
       setLoading(false);
