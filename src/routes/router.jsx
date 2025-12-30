@@ -6,6 +6,7 @@ import Skills from '../pages/Skills';
 import Projects from '../pages/Projects';
 import Contact from '../pages/Contact';
 import Feedback from '../pages/Feedback';
+import ExperienceSection from '../pages/ExprienceSection';
 // import About from '../pages/About';
 
 // import Home from '../components/home/Home/Home';
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
       {
         path: '/Contact',
         element: <Contact></Contact>,
+      },
+      {
+        path: '/experience',
+        element: <ExperienceSection></ExperienceSection>,
       },
     ],
   },

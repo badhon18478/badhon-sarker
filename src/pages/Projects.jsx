@@ -11,7 +11,6 @@ import {
   Users,
   ChevronLeft,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 const Projects = () => {
   const [filter, setFilter] = useState('all');
@@ -20,29 +19,28 @@ const Projects = () => {
   const projects = [
     {
       id: 1,
-      title: 'E-Commerce Platform',
+      title: 'Full-stack Freelance marketplace',
       description:
-        'Complete online shopping platform with payment processing, user authentication, and admin dashboard.',
+        'A complete freelance marketplace platform where clients can post jobs and freelancers can browse, accept, complete, or cancel tasks. Includes authentication, real-time task management, and secure payment integration.',
+
       technologies: ['React', 'Node.js', 'MongoDB', 'Firebase', 'Stripe'],
       category: 'fullstack',
       year: '2024',
-      github: 'https://github.com',
-      live: 'https://demo.com',
-      image:
-        'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&auto=format',
+      github: 'https://github.com/badhon18478/Marketplace.git',
+      live: 'https://server-541dc.web.app',
+      image: 'https://i.ibb.co.com/8Lk1C0ky/Screenshot-21.png',
     },
     {
       id: 2,
-      title: 'Task Management App',
+      title: 'GameHub',
       description:
-        'Collaborative task management with real-time updates, drag & drop, and team features.',
-      technologies: ['Vue.js', 'Express', 'Socket.io', 'MongoDB'],
+        'An engaging online library for discovering and supporting game developers. Users can browse indie games, see detailed information, and install if you like them',
+      technologies: ['react', 'Vue.js', 'Express', 'Firebase', 'MongoDB'],
       category: 'fullstack',
       year: '2023',
-      github: 'https://github.com',
-      live: 'https://demo.com',
-      image:
-        'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&auto=format',
+      github: 'https://github.com/badhon18478/game-hub.git',
+      live: 'https://app-libery.web.app/',
+      image: 'https://i.ibb.co.com/zThNsp5w/Screenshot-28.png',
     },
     {
       id: 3,
@@ -72,31 +70,32 @@ const Projects = () => {
     },
     {
       id: 5,
-      title: 'Portfolio Website',
+      title: 'Hero.io',
       description:
-        'Responsive portfolio website with React Router and animations.',
+        'AT HERO.IO, we craft innovative apps designed to make everyday life simpler, smarter, and more exciting. Our goal is to turn your ideas into digital experiences that truly make an impact.',
       technologies: ['React', 'Tailwind CSS', 'Framer Motion', 'React Router'],
       category: 'frontend',
       year: '2024',
-      github: 'https://github.com',
-      live: 'https://demo.com',
-      image:
-        'https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=800&auto=format',
+      github: 'https://github.com/badhon18478/hero-app.git',
+      live: 'https://inquisitive-melba-71c833.netlify.app/',
+      image: 'https://i.ibb.co.com/BH5TvRZ0/Screenshot-35.png',
     },
     {
       id: 6,
-      title: 'Weather Forecast App',
+      title: 'Tickets system',
       description:
         'Responsive weather application with location detection and forecast.',
       technologies: ['React', 'API Integration', 'CSS', 'JavaScript'],
       category: 'frontend',
       year: '2023',
-      github: 'https://github.com',
-      live: 'https://demo.com',
+      github:
+        'https://github.com/programming-hero-web-course-4/b12a7-customer-support-zone-badhon18478',
+      live: 'https://rad-cascaron-f5c69f.netlify.app/',
       image:
         'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=800&auto=format',
     },
   ];
+
   const categories = [
     { id: 'all', name: 'All Projects' },
     { id: 'fullstack', name: 'Full Stack' },
@@ -124,13 +123,13 @@ const Projects = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-20"
         >
-          <Link
-            to="/home"
+          <button
+            onClick={() => window.history.back()}
             className="inline-flex items-center gap-3 text-slate-300 hover:text-cyan-400 hover:gap-4 transition-all duration-300 mb-8 bg-slate-950/50 backdrop-blur-xl px-6 py-3 rounded-3xl border border-slate-800/50 hover:border-cyan-500/50"
           >
             <ChevronLeft size={20} />
             Back to Home
-          </Link>
+          </button>
 
           <div className="flex items-center gap-4 mb-6">
             <div className="p-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 rounded-3xl shadow-2xl shadow-cyan-500/30">
@@ -220,9 +219,20 @@ const Projects = () => {
               className="group bg-slate-950/70 backdrop-blur-2xl rounded-4xl overflow-hidden border border-slate-800/50 shadow-2xl shadow-slate-900/30 hover:border-cyan-500/40 hover:shadow-cyan-500/20 transition-all duration-500 relative"
             >
               {/* Project Image */}
-              <div className="h-56 bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-purple-600/10 relative overflow-hidden group-hover:from-cyan-500/20 group-hover:via-blue-500/15 group-hover:to-purple-600/20 transition-all duration-500">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Layers className="w-20 h-20 text-cyan-400/50 group-hover:text-cyan-400/80 transition-all duration-500" />
+              <div className="h-56 relative overflow-hidden">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
+
+                {/* Hover Overlay with Icon */}
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-blue-500/10 to-purple-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                  <div className="bg-slate-950/80 backdrop-blur-sm p-4 rounded-2xl border border-cyan-500/50">
+                    <ExternalLink className="w-8 h-8 text-cyan-400" />
+                  </div>
                 </div>
               </div>
 

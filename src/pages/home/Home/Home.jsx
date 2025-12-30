@@ -267,6 +267,7 @@ const Home = () => {
         : 'from-orange-500 via-amber-600 to-yellow-500',
     },
   ];
+
   const projects = [
     {
       title: 'Ticket Bari',
@@ -277,16 +278,19 @@ const Home = () => {
         'Node.js',
         'Express',
         'MongoDB',
-        'Firebase Auth',
+        'Firebase',
         'Stripe',
       ],
-      gradient: 'from-purple-500 to-indigo-600',
+      image: 'https://i.ibb.co.com/8Lk1C0ky/Screenshot-21.png',
+      gradient: 'from-cyan-500 to-blue-600',
     },
     {
       title: 'Authentication System',
       description:
         'Complete authentication solution with email/password login, Google sign-in, profile update, and password reset',
       technologies: ['React', 'Firebase Authentication', 'Context API', 'JWT'],
+      image:
+        'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80',
       gradient: 'from-pink-500 to-rose-600',
     },
     {
@@ -294,31 +298,39 @@ const Home = () => {
       description:
         'Realtime messaging app with Socket.io, online status, and instant message delivery',
       technologies: ['React', 'Node.js', 'Socket.io', 'MongoDB', 'Express'],
-      gradient: 'from-cyan-500 to-blue-600',
+      image:
+        'https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=800&q=80',
+      gradient: 'from-purple-500 to-indigo-600',
     },
     {
       title: 'Admin Dashboard',
       description:
         'Role-based admin panel with user management, analytics, and protected routes',
       technologies: ['React', 'Firebase', 'Node.js', 'MongoDB', 'Chart.js'],
+      image:
+        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
       gradient: 'from-emerald-500 to-green-600',
     },
     {
-      title: 'REST API Server',
+      title: 'Full-stack Freelance marketplace',
       description:
-        'Scalable REST API with MongoDB, Firebase Admin SDK, and JWT authentication',
+        'A complete freelance marketplace platform where clients can post jobs and freelancers can browse, accept, complete, or cancel tasks. Includes authentication, real-time task management, and secure payment integration.',
+
       technologies: ['Node.js', 'Express', 'MongoDB', 'Firebase Admin', 'JWT'],
+      image: 'https://i.ibb.co.com/8Lk1C0ky/Screenshot-21.png',
+
       gradient: 'from-orange-500 to-amber-600',
     },
     {
-      title: 'TypeScript Web Application',
+      title: 'TypeScript Web App',
       description:
         'Modern TypeScript-based frontend project deployed to Netlify',
       technologies: ['TypeScript', 'React', 'Vite', 'Netlify'],
+      image:
+        'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80',
       gradient: 'from-sky-500 to-blue-700',
     },
   ];
-
   const process = [
     {
       step: '01',
@@ -798,7 +810,7 @@ const Home = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               whileHover={{ gap: 12 }}
-              className={`hidden md:flex items-center gap-3 font-semibold transition-colors ${
+              className={`hidden md:flex items-center gap-3 font-semibold transition-all ${
                 darkMode
                   ? 'text-cyan-400 hover:text-cyan-300'
                   : 'text-cyan-600 hover:text-cyan-700'
@@ -808,45 +820,57 @@ const Home = () => {
             </motion.button>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.2 }}
+                transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10 }}
-                className={`group relative rounded-3xl overflow-hidden transition-all ${theme.cardBg} ${theme.borderColor} hover:border-purple-500/50`}
+                className={`group relative rounded-3xl overflow-hidden border transition-all ${theme.cardBg} ${theme.borderColor} hover:border-purple-500/50`}
               >
-                <div
-                  className={`h-64 bg-gradient-to-br ${project.gradient} relative overflow-hidden`}
-                >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-t ${theme.gradientOverlay}`}
+                {/* Project Image */}
+                <div className="relative h-56 overflow-hidden">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Layers
-                      className={`w-32 h-32 text-white/20 group-hover:scale-110 group-hover:rotate-6 transition-transform`}
-                    />
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-t ${
+                      darkMode
+                        ? 'from-slate-900 via-slate-900/50 to-transparent'
+                        : 'from-gray-900/80 via-gray-900/40 to-transparent'
+                    }`}
+                  />
+
+                  {/* Overlay Icon */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div
+                      className={`p-4 rounded-full bg-gradient-to-br ${project.gradient}`}
+                    >
+                      <ExternalLink className="w-8 h-8 text-white" />
+                    </div>
                   </div>
                 </div>
 
-                <div className="p-8">
+                <div className="p-6">
                   <h3
                     className={`text-2xl font-bold mb-3 ${theme.textPrimary}`}
                   >
                     {project.title}
                   </h3>
-                  <p className={`mb-6 ${theme.textSecondary}`}>
+                  <p className={`mb-6 text-sm ${theme.textSecondary}`}>
                     {project.description}
                   </p>
 
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.technologies.map((tech, idx) => (
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.slice(0, 4).map((tech, idx) => (
                       <span
                         key={idx}
-                        className={`px-4 py-2 rounded-full text-sm font-medium ${
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
                           darkMode
                             ? 'bg-slate-800/50 border border-slate-700/50 text-slate-300'
                             : 'bg-gray-100 border border-gray-200 text-gray-700'
@@ -855,24 +879,24 @@ const Home = () => {
                         {tech}
                       </span>
                     ))}
+                    {project.technologies.length > 4 && (
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          darkMode
+                            ? 'bg-slate-800/50 border border-slate-700/50 text-slate-300'
+                            : 'bg-gray-100 border border-gray-200 text-gray-700'
+                        }`}
+                      >
+                        +{project.technologies.length - 4}
+                      </span>
+                    )}
                   </div>
-
-                  <button
-                    className={`flex items-center gap-2 font-semibold group-hover:gap-4 transition-all ${
-                      darkMode
-                        ? 'text-purple-400 hover:text-purple-300'
-                        : 'text-purple-600 hover:text-purple-700'
-                    }`}
-                  >
-                    View Case Study <ExternalLink className="w-4 h-4" />
-                  </button>
                 </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
-
       {/* Process Section */}
       <section className="relative py-32 px-4 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto relative z-10">
