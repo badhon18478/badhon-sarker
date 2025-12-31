@@ -1036,12 +1036,12 @@ const ExperienceSection = () => {
               transition={{ duration: 4, repeat: Infinity }}
               className="absolute -left-8 md:-left-12 top-1/2 -translate-y-1/2"
             >
-              <Star
+              {/* <Star
                 className={`w-8 h-8 md:w-10 md:h-10 ${
                   darkMode ? 'text-yellow-400' : 'text-yellow-500'
                 }`}
                 fill="currentColor"
-              />
+              /> */}
             </motion.div>
 
             <motion.div
@@ -1052,11 +1052,11 @@ const ExperienceSection = () => {
               transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
               className="absolute -right-8 md:-right-12 top-1/2 -translate-y-1/2"
             >
-              <Crown
+              {/* <Crown
                 className={`w-8 h-8 md:w-10 md:h-10 ${
                   darkMode ? 'text-purple-400' : 'text-purple-500'
                 }`}
-              />
+              /> */}
             </motion.div>
           </motion.div>
 
