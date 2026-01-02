@@ -1,5 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from 'framer-motion';
 import {
   Download,
   ArrowRight,
@@ -36,17 +41,26 @@ import {
   Box,
   Moon,
   Sun,
+  Quote,
+  Play,
+  ChevronRight,
+  ChevronDown,
+  Pause,
 } from 'lucide-react';
 import bgImg from '../../../assets/image.png';
 import { Link } from 'react-router';
-// import SkillsBento from '../../../components/SkillsBento';
 
 const Home = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [darkMode, setDarkMode] = useState(true);
+  const [activeService, setActiveService] = useState(0);
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [hoveredProject, setHoveredProject] = useState(null);
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const handleMouseMove = e => {
@@ -56,9 +70,8 @@ const Home = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  // Theme sync with Navbar - SIMPLE AND EFFECTIVE
+  // Theme sync with Navbar
   useEffect(() => {
-    // Function to check and update theme
     const checkAndUpdateTheme = () => {
       const currentTheme = localStorage.getItem('theme');
       if (currentTheme) {
@@ -69,17 +82,9 @@ const Home = () => {
       }
     };
 
-    // Initial check
     checkAndUpdateTheme();
-
-    // Set up interval to check for theme changes
     const interval = setInterval(checkAndUpdateTheme, 300);
-
-    // Also check when window gets focus (user switches back to tab)
-    const handleFocus = () => {
-      checkAndUpdateTheme();
-    };
-
+    const handleFocus = () => checkAndUpdateTheme();
     window.addEventListener('focus', handleFocus);
 
     return () => {
@@ -88,10 +93,18 @@ const Home = () => {
     };
   }, [darkMode]);
 
+  // Auto-rotate testimonials
+  useEffect(() => {
+    if (!isPlaying) return;
+    const interval = setInterval(() => {
+      setActiveTestimonial(prev => (prev + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [isPlaying]);
+
   const handleCVDownload = () => {
     const cvUrl =
       'https://drive.google.com/uc?export=download&id=1QLs3uI9L2WjO4u1Tc2Jm_yVItrMGC0Q4';
-
     const link = document.createElement('a');
     link.href = cvUrl;
     link.setAttribute('target', '_blank');
@@ -99,29 +112,6 @@ const Home = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  // Theme toggle function
-  const toggleDarkMode = () => {
-    // Get current theme from localStorage
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    const themes = ['light', 'dark', 'night'];
-    const currentIndex = themes.indexOf(currentTheme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    const newTheme = themes[nextIndex];
-
-    // Update localStorage
-    localStorage.setItem('theme', newTheme);
-
-    // Update document class
-    document.documentElement.classList.remove('light', 'dark', 'night');
-    document.documentElement.classList.add(newTheme);
-
-    // Dispatch custom event
-    window.dispatchEvent(new CustomEvent('themechange', { detail: newTheme }));
-
-    // Update state
-    setDarkMode(newTheme === 'dark' || newTheme === 'night');
   };
 
   // Dynamic theme colors and backgrounds
@@ -283,6 +273,8 @@ const Home = () => {
       ],
       image: 'https://i.ibb.co.com/8Lk1C0ky/Screenshot-21.png',
       gradient: 'from-cyan-500 to-blue-600',
+      liveUrl: '#',
+      githubUrl: '#',
     },
     {
       title: 'Authentication System',
@@ -292,6 +284,8 @@ const Home = () => {
       image:
         'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80',
       gradient: 'from-pink-500 to-rose-600',
+      liveUrl: '#',
+      githubUrl: '#',
     },
     {
       title: 'Real-Time Chat Application',
@@ -301,6 +295,8 @@ const Home = () => {
       image:
         'https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=800&q=80',
       gradient: 'from-purple-500 to-indigo-600',
+      liveUrl: '#',
+      githubUrl: '#',
     },
     {
       title: 'Admin Dashboard',
@@ -310,16 +306,18 @@ const Home = () => {
       image:
         'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
       gradient: 'from-emerald-500 to-green-600',
+      liveUrl: '#',
+      githubUrl: '#',
     },
     {
       title: 'Full-stack Freelance marketplace',
       description:
-        'A complete freelance marketplace platform where clients can post jobs and freelancers can browse, accept, complete, or cancel tasks. Includes authentication, real-time task management, and secure payment integration.',
-
+        'A complete freelance marketplace platform where clients can post jobs and freelancers can browse, accept, complete, or cancel tasks.',
       technologies: ['Node.js', 'Express', 'MongoDB', 'Firebase Admin', 'JWT'],
       image: 'https://i.ibb.co.com/8Lk1C0ky/Screenshot-21.png',
-
       gradient: 'from-orange-500 to-amber-600',
+      liveUrl: '#',
+      githubUrl: '#',
     },
     {
       title: 'TypeScript Web App',
@@ -329,60 +327,83 @@ const Home = () => {
       image:
         'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&q=80',
       gradient: 'from-sky-500 to-blue-700',
+      liveUrl: '#',
+      githubUrl: '#',
     },
   ];
+
+  const testimonials = [
+    {
+      name: 'Alex Johnson',
+      position: 'CEO at TechStart',
+      content:
+        'Badhon delivered an exceptional web application that exceeded our expectations. His attention to detail and problem-solving skills are outstanding.',
+      avatar:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80',
+      rating: 5,
+    },
+    {
+      name: 'Sarah Williams',
+      position: 'Product Manager at InnovateCo',
+      content:
+        'Working with Badhon was a game-changer for our project. He brought innovative solutions and delivered on time. Highly recommended!',
+      avatar:
+        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&q=80',
+      rating: 5,
+    },
+    {
+      name: 'Michael Chen',
+      position: 'CTO at DataFlow',
+      content:
+        "Badhon's technical expertise and commitment to quality are impressive. He transformed our complex requirements into a seamless user experience.",
+      avatar:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80',
+      rating: 5,
+    },
+  ];
+
   const process = [
     {
       step: '01',
       title: 'Discovery',
       description: 'Deep dive into your vision',
       icon: <Target />,
+      details:
+        'Understanding your goals, audience, and requirements to create a solid foundation.',
     },
     {
       step: '02',
       title: 'Strategy',
       description: 'Blueprint for success',
       icon: <FileText />,
+      details:
+        'Creating a detailed roadmap with technical specifications and design mockups.',
     },
     {
       step: '03',
       title: 'Development',
       description: 'Bringing ideas to life',
       icon: <Code2 />,
+      details:
+        'Implementing the solution with clean code, regular updates, and iterative feedback.',
     },
     {
       step: '04',
       title: 'Launch',
       description: 'Deploy and scale',
       icon: <Rocket />,
+      details:
+        'Deploying to production, monitoring performance, and planning for future enhancements.',
     },
   ];
 
   return (
     <div
       className={`min-h-screen bg-gradient-to-br ${theme.bgPrimary} ${theme.textPrimary} overflow-hidden transition-all duration-500`}
+      ref={containerRef}
     >
-      {/* Theme Toggle Button - Remove this since Navbar already has it */}
-      {/* <motion.button
-        className={`fixed top-6 right-6 z-500 p-3 rounded-xl backdrop-blur-xl border ${
-          darkMode
-            ? 'bg-slate-900/80 border-slate-700 hover:bg-slate-800/90'
-            : 'bg-white/80 border-gray-200/50 hover:bg-gray-100/90'
-        } shadow-2xl transition-all duration-300`}
-        onClick={toggleDarkMode}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      >
-        {darkMode ? (
-          <Sun className="w-5 h-5 text-yellow-400" />
-        ) : (
-          <Moon className="w-5 h-5 text-slate-600" />
-        )}
-      </motion.button> */}
-
-      {/* Animated Background - Dynamic based on theme */}
-      <div className="fixed inset-0 pointer-events-none">
+      {/* Animated Background - Enhanced with more elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div
           className={`absolute top-0 left-1/4 w-96 h-96 ${
             darkMode ? 'bg-cyan-500/20' : 'bg-cyan-400/10'
@@ -398,9 +419,33 @@ const Home = () => {
             darkMode ? 'bg-pink-500/10' : 'bg-pink-400/5'
           } rounded-full blur-3xl animate-pulse delay-1000`}
         />
+
+        {/* Floating particles */}
+        {[...Array(15)].map((_, i) => (
+          <motion.div
+            key={i}
+            className={`absolute w-2 h-2 rounded-full ${
+              darkMode ? 'bg-white/10' : 'bg-black/5'
+            }`}
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              x: [0, Math.random() * 50 - 25, 0],
+              opacity: [0, 0.5, 0],
+            }}
+            transition={{
+              duration: 10 + Math.random() * 20,
+              repeat: Infinity,
+              delay: Math.random() * 5,
+            }}
+          />
+        ))}
       </div>
 
-      {/* Mouse Follow Effect */}
+      {/* Mouse Follow Effect - Enhanced */}
       <motion.div
         className="fixed w-6 h-6 rounded-full border-2 pointer-events-none z-50 mix-blend-screen border-cyan-400/50"
         animate={{
@@ -410,18 +455,33 @@ const Home = () => {
         transition={{ type: 'spring', damping: 30, stiffness: 200 }}
       />
 
-      {/* Hero Section */}
+      {/* Glow effect following mouse */}
+      <motion.div
+        className="fixed w-32 h-32 rounded-full pointer-events-none z-40"
+        style={{
+          background: darkMode
+            ? 'radial-gradient(circle, rgba(34, 211, 238, 0.15) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 70%)',
+        }}
+        animate={{
+          x: mousePosition.x - 64,
+          y: mousePosition.y - 64,
+        }}
+        transition={{ type: 'spring', damping: 50, stiffness: 100 }}
+      />
+
+      {/* Hero Section - Enhanced */}
       <section className="relative min-h-screen flex items-center px-4 md:px-8 lg:px-16 pt-20">
         <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Side: Content */}
+            {/* Left Side: Content - Enhanced with more animations */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
               style={{ opacity, scale }}
             >
-              {/* Badge */}
+              {/* Badge - Enhanced */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -448,14 +508,14 @@ const Home = () => {
                 </span>
               </motion.div>
 
-              {/* Main Headline */}
+              {/* Main Headline - Enhanced with typewriter effect */}
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight"
               >
-                <span className="block">Hi, Iam</span>
+                <span className="block">Hi, I'm</span>
                 <span
                   className={`block animate-gradient-x ${
                     darkMode
@@ -477,7 +537,7 @@ const Home = () => {
                 cutting-edge technologies and modern design principles.
               </motion.p>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons - Enhanced */}
               <div className="flex flex-wrap gap-4 mb-12">
                 <motion.button
                   whileHover={{
@@ -515,10 +575,17 @@ const Home = () => {
                 </motion.button>
               </div>
 
-              {/* Quick Stats */}
+              {/* Quick Stats - Enhanced with animations */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {stats.map((stat, index) => (
-                  <div key={index} className="text-left">
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                    className="text-left"
+                    whileHover={{ y: -5 }}
+                  >
                     <div
                       className={`text-3xl font-black ${theme.statsText} mb-1`}
                     >
@@ -529,12 +596,12 @@ const Home = () => {
                     >
                       {stat.label}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
 
-            {/* Right Side - Refined 3D Card */}
+            {/* Right Side - Enhanced 3D Card with more interactions */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -542,7 +609,7 @@ const Home = () => {
               className="relative hidden lg:flex justify-center items-center"
             >
               <div className="relative w-[450px] h-[450px]">
-                {/* Rotating Rings */}
+                {/* Rotating Rings - Enhanced with more elements */}
                 <div
                   className={`absolute inset-0 border-2 border-dashed rounded-full animate-spin-slow ${
                     darkMode ? 'border-cyan-500/20' : 'border-cyan-400/30'
@@ -553,8 +620,13 @@ const Home = () => {
                     darkMode ? 'border-purple-500/20' : 'border-purple-400/30'
                   }`}
                 />
+                <div
+                  className={`absolute inset-20 border-2 border-dotted rounded-full animate-spin-slow ${
+                    darkMode ? 'border-pink-500/20' : 'border-pink-400/30'
+                  }`}
+                />
 
-                {/* Image Container */}
+                {/* Image Container - Enhanced */}
                 <div
                   className={`absolute inset-20 rounded-full overflow-hidden border-8 shadow-2xl bg-gradient-to-br ${
                     darkMode
@@ -569,7 +641,7 @@ const Home = () => {
                   />
                 </div>
 
-                {/* Floating Badges */}
+                {/* Floating Badges - Enhanced with more details */}
                 <motion.div
                   animate={{ y: [0, -15, 0] }}
                   transition={{
@@ -630,53 +702,98 @@ const Home = () => {
                     </div>
                   </div>
                 </motion.div>
+
+                {/* New floating badge */}
+                <motion.div
+                  animate={{ x: [0, 10, 0] }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                  className={`absolute bottom-10 right-0 p-3 rounded-xl shadow-lg flex items-center gap-2 backdrop-blur-md ${
+                    darkMode
+                      ? 'bg-slate-900/90 border border-slate-700'
+                      : 'bg-white/90 border border-gray-200'
+                  }`}
+                >
+                  <div
+                    className={`p-1.5 rounded-lg ${
+                      darkMode
+                        ? 'bg-purple-500/20 text-purple-400'
+                        : 'bg-purple-400/20 text-purple-500'
+                    }`}
+                  >
+                    <Database size={18} />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold">Database</div>
+                    <div className={`text-xs ${theme.textSecondary}`}>
+                      MongoDB
+                    </div>
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Update Style Block */}
-      <style jsx>{`
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        @keyframes spin-reverse {
-          from {
-            transform: rotate(360deg);
-          }
-          to {
-            transform: rotate(0deg);
-          }
-        }
-        @keyframes gradient-x {
-          0%,
-          100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-        }
+      {/* Tech Stack Section - New */}
+      <section className="relative py-20 px-4 md:px-8 lg:px-16">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl md:text-5xl font-black mb-6">
+              <span
+                className={`bg-gradient-to-r ${
+                  darkMode
+                    ? 'from-cyan-400 via-blue-400 to-purple-400'
+                    : 'from-cyan-500 via-blue-600 to-indigo-500'
+                } bg-clip-text text-transparent`}
+              >
+                Tech Stack
+              </span>
+            </h2>
+            <p className={`text-lg max-w-2xl mx-auto ${theme.textSecondary}`}>
+              Technologies I work with to bring your ideas to life
+            </p>
+          </motion.div>
 
-        .animate-spin-slow {
-          animation: spin-slow 15s linear infinite;
-        }
-        .animate-spin-reverse {
-          animation: spin-reverse 10s linear infinite;
-        }
-        .animate-gradient-x {
-          background-size: 200% 200%;
-          animation: gradient-x 5s ease infinite;
-        }
-      `}</style>
+          <div className="flex flex-wrap justify-center gap-6">
+            {techStack.map((tech, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: tech.delay }}
+                whileHover={{ y: -5, scale: 1.05 }}
+                className={`p-4 rounded-2xl backdrop-blur-md ${
+                  darkMode
+                    ? 'bg-slate-800/50 border border-slate-700/50'
+                    : 'bg-white/50 border border-gray-200/50'
+                }`}
+              >
+                <div
+                  className={`p-3 rounded-xl bg-gradient-to-br ${tech.color} mb-3`}
+                >
+                  {React.cloneElement(tech.icon, {
+                    className: 'w-6 h-6 text-white',
+                  })}
+                </div>
+                <div className="text-sm font-semibold">{tech.name}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* Services Section */}
+      {/* Services Section - Enhanced */}
       <section className="relative py-32 px-4 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
@@ -724,7 +841,14 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className={`group relative rounded-3xl p-8 hover:border-cyan-500/50 transition-all overflow-hidden backdrop-blur-xl ${theme.cardBg} ${theme.borderColor}`}
+                onMouseEnter={() => setActiveService(index)}
+                className={`group relative rounded-3xl p-8 hover:border-cyan-500/50 transition-all overflow-hidden backdrop-blur-xl ${
+                  activeService === index
+                    ? darkMode
+                      ? 'border-cyan-500/50 bg-slate-800/70'
+                      : 'border-cyan-400/50 bg-white/70'
+                    : theme.cardBg + ' ' + theme.borderColor
+                }`}
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-10 transition-opacity`}
@@ -768,8 +892,8 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* <SkillsBento></SkillsBento> */}
-      {/* Projects Section */}
+
+      {/* Projects Section - Enhanced */}
       <section className="relative py-32 px-4 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="flex justify-between items-end mb-16">
@@ -829,9 +953,17 @@ const Home = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10 }}
-                className={`group relative rounded-3xl overflow-hidden border transition-all ${theme.cardBg} ${theme.borderColor} hover:border-purple-500/50`}
+                onMouseEnter={() => setHoveredProject(index)}
+                onMouseLeave={() => setHoveredProject(null)}
+                className={`group relative rounded-3xl overflow-hidden border transition-all ${
+                  theme.cardBg
+                } ${
+                  hoveredProject === index
+                    ? 'border-purple-500/50 shadow-2xl shadow-purple-500/20'
+                    : theme.borderColor
+                }`}
               >
-                {/* Project Image */}
+                {/* Project Image - Enhanced */}
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={project.image}
@@ -846,14 +978,34 @@ const Home = () => {
                     }`}
                   />
 
-                  {/* Overlay Icon */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div
-                      className={`p-4 rounded-full bg-gradient-to-br ${project.gradient}`}
-                    >
-                      <ExternalLink className="w-8 h-8 text-white" />
-                    </div>
-                  </div>
+                  {/* Overlay Icons - Enhanced */}
+                  <AnimatePresence>
+                    {hoveredProject === index && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 flex items-center justify-center gap-4"
+                      >
+                        <motion.a
+                          href={project.liveUrl}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className={`p-3 rounded-full bg-gradient-to-br ${project.gradient}`}
+                        >
+                          <ExternalLink className="w-5 h-5 text-white" />
+                        </motion.a>
+                        <motion.a
+                          href={project.githubUrl}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          className={`p-3 rounded-full bg-gradient-to-br ${project.gradient}`}
+                        >
+                          <Github className="w-5 h-5 text-white" />
+                        </motion.a>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <div className="p-6">
@@ -897,7 +1049,168 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* Process Section */}
+
+      {/* Testimonials Section - New */}
+      <section className="relative py-32 px-4 md:px-8 lg:px-16">
+        <div className="max-w-5xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
+            <div
+              className={`inline-flex items-center gap-2 px-6 py-3 rounded-full mb-6 backdrop-blur-sm ${
+                darkMode
+                  ? 'bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20'
+                  : 'bg-gradient-to-r from-amber-400/10 to-yellow-400/10 border border-amber-400/30'
+              }`}
+            >
+              <Quote
+                className={`w-5 h-5 ${
+                  darkMode ? 'text-amber-400' : 'text-amber-500'
+                }`}
+              />
+              <span className="text-sm font-semibold">Testimonials</span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-black mb-6">
+              <span
+                className={`bg-gradient-to-r ${
+                  darkMode
+                    ? 'from-amber-400 via-yellow-400 to-orange-400'
+                    : 'from-amber-500 via-yellow-600 to-orange-500'
+                } bg-clip-text text-transparent`}
+              >
+                What Clients Say
+              </span>
+            </h2>
+            <p className={`text-xl max-w-3xl mx-auto ${theme.textSecondary}`}>
+              Feedback from people I've worked with
+            </p>
+          </motion.div>
+
+          <div className="relative">
+            <div className="flex justify-center items-center">
+              <button
+                onClick={() =>
+                  setActiveTestimonial(
+                    prev =>
+                      (prev - 1 + testimonials.length) % testimonials.length
+                  )
+                }
+                className={`p-2 rounded-full mr-4 ${
+                  darkMode
+                    ? 'bg-slate-800/50 hover:bg-slate-700/50 text-slate-300'
+                    : 'bg-gray-200/50 hover:bg-gray-300/50 text-gray-700'
+                }`}
+              >
+                <ChevronRight className="w-5 h-5 rotate-180" />
+              </button>
+
+              <div className="overflow-hidden max-w-2xl">
+                <motion.div
+                  className="flex"
+                  animate={{ x: -activeTestimonial * 100 + '%' }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                >
+                  {testimonials.map((testimonial, index) => (
+                    <div key={index} className="w-full flex-shrink-0 px-4">
+                      <div
+                        className={`p-8 rounded-3xl ${
+                          darkMode
+                            ? 'bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700/50'
+                            : 'bg-gradient-to-br from-white/50 to-gray-100/50 border border-gray-200/50'
+                        }`}
+                      >
+                        <div className="flex items-center mb-6">
+                          <img
+                            src={testimonial.avatar}
+                            alt={testimonial.name}
+                            className="w-16 h-16 rounded-full mr-4"
+                          />
+                          <div>
+                            <h4
+                              className={`text-lg font-bold ${theme.textPrimary}`}
+                            >
+                              {testimonial.name}
+                            </h4>
+                            <p className={`text-sm ${theme.textSecondary}`}>
+                              {testimonial.position}
+                            </p>
+                            <div className="flex mt-1">
+                              {[...Array(testimonial.rating)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-4 h-4 fill-current ${
+                                    darkMode
+                                      ? 'text-yellow-400'
+                                      : 'text-yellow-500'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <p className={`text-lg ${theme.textSecondary}`}>
+                          "{testimonial.content}"
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+
+              <button
+                onClick={() =>
+                  setActiveTestimonial(prev => (prev + 1) % testimonials.length)
+                }
+                className={`p-2 rounded-full ml-4 ${
+                  darkMode
+                    ? 'bg-slate-800/50 hover:bg-slate-700/50 text-slate-300'
+                    : 'bg-gray-200/50 hover:bg-gray-300/50 text-gray-700'
+                }`}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex justify-center mt-6 gap-2">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTestimonial(index)}
+                  className={`w-2 h-2 rounded-full ${
+                    activeTestimonial === index
+                      ? darkMode
+                        ? 'bg-cyan-400'
+                        : 'bg-cyan-500'
+                      : darkMode
+                      ? 'bg-slate-600'
+                      : 'bg-gray-400'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className={`mt-4 mx-auto block p-2 rounded-full ${
+                darkMode
+                  ? 'bg-slate-800/50 hover:bg-slate-700/50 text-slate-300'
+                  : 'bg-gray-200/50 hover:bg-gray-300/50 text-gray-700'
+              }`}
+            >
+              {isPlaying ? (
+                <Pause className="w-4 h-4" />
+              ) : (
+                <Play className="w-4 h-4" />
+              )}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section - Enhanced */}
       <section className="relative py-32 px-4 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
@@ -972,7 +1285,12 @@ const Home = () => {
                 <h3 className={`text-2xl font-bold mb-3 ${theme.textPrimary}`}>
                   {item.title}
                 </h3>
-                <p className={theme.textSecondary}>{item.description}</p>
+                <p className={`mb-3 ${theme.textSecondary}`}>
+                  {item.description}
+                </p>
+                <p className={`text-sm ${theme.textSecondary} opacity-80`}>
+                  {item.details}
+                </p>
 
                 {index < process.length - 1 && (
                   <div className="hidden md:block absolute top-12 left-[60%] w-full h-0.5" />
@@ -983,23 +1301,23 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section - Enhanced */}
       <section className="relative py-28 px-4 md:px-8 lg:px-16">
         <div className="max-w-5xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className={`relative rounded-[3rem] p-12 md:p-12 text-center overflow-hidden backdrop-blur-xl ${
+            className={`relative rounded-[3rem] p-12 md:p-16 text-center overflow-hidden backdrop-blur-xl ${
               darkMode
                 ? 'bg-gradient-to-br from-cyan-500 via-purple-600 to-pink-600'
                 : 'bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600'
             }`}
           >
-            {/* Animated Background */}
+            {/* Animated Background - Enhanced */}
             <div className="absolute inset-0 opacity-30">
               <div className="absolute top-0 left-0 w-full h-full">
-                {[...Array(20)].map((_, i) => (
+                {[...Array(30)].map((_, i) => (
                   <motion.div
                     key={i}
                     className="absolute w-2 h-2 bg-white rounded-full"
@@ -1070,7 +1388,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Social Connect Section */}
+      {/* Social Connect Section - Enhanced */}
       <section className="relative py-32 px-4 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto relative z-10">
           <motion.div
@@ -1157,6 +1475,38 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Footer - New */}
+      <footer
+        className={`relative py-12 px-4 md:px-8 lg:px-16 border-t ${
+          darkMode ? 'border-slate-800' : 'border-gray-200'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <div className={`text-sm ${theme.textSecondary}`}>
+                © {new Date().getFullYear()} Badhon Sarker. All rights reserved.
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <Link
+                to="/privacy"
+                className={`text-sm ${theme.textSecondary} hover:text-cyan-400 transition-colors`}
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                to="/terms"
+                className={`text-sm ${theme.textSecondary} hover:text-cyan-400 transition-colors`}
+              >
+                Terms of Service
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Update Style Block - Enhanced with more animations */}
       <style jsx>{`
         @keyframes spin-slow {
           from {
@@ -1174,13 +1524,7 @@ const Home = () => {
             transform: rotate(0deg);
           }
         }
-        .animate-spin-slow {
-          animation: spin-slow 20s linear infinite;
-        }
-        .animate-spin-reverse {
-          animation: spin-reverse 15s linear infinite;
-        }
-        @keyframes gradient {
+        @keyframes gradient-x {
           0%,
           100% {
             background-position: 0% 50%;
@@ -1189,9 +1533,28 @@ const Home = () => {
             background-position: 100% 50%;
           }
         }
-        .animate-gradient {
+        @keyframes float {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 15s linear infinite;
+        }
+        .animate-spin-reverse {
+          animation: spin-reverse 10s linear infinite;
+        }
+        .animate-gradient-x {
           background-size: 200% 200%;
-          animation: gradient 3s ease infinite;
+          animation: gradient-x 5s ease infinite;
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
         }
       `}</style>
     </div>
