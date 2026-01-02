@@ -1476,7 +1476,7 @@ const Home = () => {
       </section>
 
       {/* Footer - New */}
-      <footer
+      {/* <footer
         className={`relative py-12 px-4 md:px-8 lg:px-16 border-t ${
           darkMode ? 'border-slate-800' : 'border-gray-200'
         }`}
@@ -1504,7 +1504,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </footer>
+      </footer> */}
 
       {/* Update Style Block - Enhanced with more animations */}
       <style jsx>{`
