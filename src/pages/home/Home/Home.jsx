@@ -635,59 +635,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* Tech Stack Section - New */}
-      <section className="relative py-20 px-4 md:px-8 lg:px-16">
-        <div className="max-w-7xl mx-auto relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl md:text-5xl font-black mb-6">
-              <span
-                className={`bg-gradient-to-r ${
-                  darkMode
-                    ? 'from-cyan-400 via-blue-400 to-purple-400'
-                    : 'from-cyan-500 via-blue-600 to-indigo-500'
-                } bg-clip-text text-transparent`}
-              >
-                Tech Stack
-              </span>
-            </h2>
-            <p className={`text-lg max-w-2xl mx-auto ${theme.textSecondary}`}>
-              Technologies I work with to bring your ideas to life
-            </p>
-          </motion.div>
-
-          <div className="flex flex-wrap justify-center gap-6">
-            {techStack.map((tech, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: tech.delay }}
-                whileHover={{ y: -5, scale: 1.05 }}
-                className={`p-4 rounded-2xl backdrop-blur-md ${
-                  darkMode
-                    ? 'bg-slate-800/50 border border-slate-700/50'
-                    : 'bg-white/50 border border-gray-200/50'
-                }`}
-              >
-                <div
-                  className={`p-3 rounded-xl bg-gradient-to-br ${tech.color} mb-3`}
-                >
-                  {React.cloneElement(tech.icon, {
-                    className: 'w-6 h-6 text-white',
-                  })}
-                </div>
-                <div className="text-sm font-semibold">{tech.name}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Update Style Block */}
       <style jsx>{`
