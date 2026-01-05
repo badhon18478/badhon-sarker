@@ -769,6 +769,44 @@ const Home = () => {
         </div>
       </section>
       {/* <SkillsBento></SkillsBento> */}
+      <section className="relative py-20 px-4 md:px-8 lg:px-16">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h3 className="text-3xl font-bold mb-4">Tech Stack</h3>
+            <p className={`text-lg ${theme.textSecondary} max-w-2xl mx-auto`}>
+              Technologies I work with to build amazing products
+            </p>
+          </motion.div>
+
+          <div className="flex flex-wrap justify-center gap-4">
+            {techStack.map((tech, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ scale: 1.1, y: -5 }}
+                className={`p-4 rounded-xl backdrop-blur-sm border ${
+                  theme.shadow
+                } ${
+                  darkMode
+                    ? 'bg-gray-900/30 border-gray-800'
+                    : 'bg-white/30 border-gray-200'
+                }`}
+              >
+                <div className={`${tech.color} mb-2`}>{tech.icon}</div>
+                <div className="text-sm font-medium">{tech.name}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* Projects Section */}
       <section className="relative py-32 px-4 md:px-8 lg:px-16">
         <div className="max-w-7xl mx-auto relative z-10">
