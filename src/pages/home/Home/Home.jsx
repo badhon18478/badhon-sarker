@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import {
   Download,
@@ -47,6 +47,8 @@ const Home = () => {
   const { scrollYProgress } = useScroll();
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
+  const cardRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = e => {
@@ -535,99 +537,73 @@ const Home = () => {
             </motion.div>
 
             {/* Right Side - Refined 3D Card */}
+            {/* Right Side - Responsive 3D Card - Mobile friendly */}
             <motion.div
+              ref={cardRef}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1 }}
-              className="relative hidden lg:flex justify-center items-center"
+              className="relative order-1 lg:order-2 flex justify-center items-center mb-10 lg:mb-0"
             >
-              <div className="relative w-[450px] h-[450px]">
-                {/* Rotating Rings */}
-                <div
-                  className={`absolute inset-0 border-2 border-dashed rounded-full animate-spin-slow ${
-                    darkMode ? 'border-cyan-500/20' : 'border-cyan-400/30'
-                  }`}
-                />
-                <div
-                  className={`absolute inset-10 border-2 border-dashed rounded-full animate-spin-reverse ${
-                    darkMode ? 'border-purple-500/20' : 'border-purple-400/30'
-                  }`}
-                />
+              <div className="relative w-[280px] h-[280px] md:w-[350px] md:h-[350px] lg:w-[450px] lg:h-[450px]">
+                {/* Rotating Rings - Hide on small mobile */}
+                {!isMobile && (
+                  <>
+                    <div className="absolute inset-0 border-2 border-dashed rounded-full animate-spin-slow border-cyan-500/20" />
+                    <div className="absolute inset-8 border-2 border-dashed rounded-full animate-spin-reverse border-purple-500/20" />
+                  </>
+                )}
 
-                {/* Image Container */}
-                <div
-                  className={`absolute inset-20 rounded-full overflow-hidden border-8 shadow-2xl bg-gradient-to-br ${
-                    darkMode
-                      ? 'border-slate-900 from-cyan-500/10 to-purple-600/10'
-                      : 'border-gray-100 from-cyan-400/10 to-blue-500/10'
-                  }`}
-                >
+                {/* Image Container - Responsive sizing */}
+                <div className="absolute inset-8 md:ins-12 lg:ins-20 rounded-full overflow-hidden border-4 md:border-6 lg:border-8 shadow-2xl bg-gradient-to-br border-slate-900 from-cyan-500/10 to-purple-600/10">
+                  {/* Replace with your actual image */}
                   <img
                     src={bgImg}
                     alt="Badhon Sarker"
                     className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500 scale-110"
+                    loading="lazy"
                   />
                 </div>
 
-                {/* Floating Badges */}
+                {/* Floating Badges - Adjust position for mobile */}
                 <motion.div
-                  animate={{ y: [0, -15, 0] }}
+                  animate={{ y: [0, -10, 0] }}
                   transition={{
                     duration: 4,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
-                  className={`absolute top-10 -right-5 p-4 rounded-2xl shadow-xl flex items-center gap-3 backdrop-blur-md ${
-                    darkMode
-                      ? 'bg-slate-900/90 border border-slate-700'
-                      : 'bg-white/90 border border-gray-200'
-                  }`}
+                  className={`absolute ${
+                    isMobile ? 'top-4 -right-2' : 'top-10 -right-5'
+                  } p-3 md:p-4 rounded-xl md:rounded-2xl shadow-xl flex items-center gap-2 md:gap-3 backdrop-blur-md bg-slate-900/90 border border-slate-700`}
                 >
-                  <div
-                    className={`p-2 rounded-lg ${
-                      darkMode
-                        ? 'bg-blue-500/20 text-cyan-400'
-                        : 'bg-blue-400/20 text-blue-500'
-                    }`}
-                  >
-                    <Code2 size={24} />
+                  <div className="p-1.5 md:p-2 rounded-lg bg-blue-500/20 text-cyan-400">
+                    <Code2 size={isMobile ? 18 : 24} />
                   </div>
                   <div>
-                    <div className="text-sm font-bold">Frontend</div>
-                    <div className={`text-xs ${theme.textSecondary}`}>
-                      React Expert
-                    </div>
+                    <div className="text-xs md:text-sm font-bold">Frontend</div>
+                    <div className="text-xs text-slate-400">React Expert</div>
                   </div>
                 </motion.div>
 
                 <motion.div
-                  animate={{ y: [0, 15, 0] }}
+                  animate={{ y: [0, 10, 0] }}
                   transition={{
                     duration: 5,
                     repeat: Infinity,
                     ease: 'easeInOut',
                     delay: 1,
                   }}
-                  className={`absolute bottom-20 -left-10 p-4 rounded-2xl shadow-xl flex items-center gap-3 backdrop-blur-md ${
-                    darkMode
-                      ? 'bg-slate-900/90 border border-slate-700'
-                      : 'bg-white/90 border border-gray-200'
-                  }`}
+                  className={`absolute ${
+                    isMobile ? 'bottom-4 -left-2' : 'bottom-20 -left-10'
+                  } p-3 md:p-4 rounded-xl md:rounded-2xl shadow-xl flex items-center gap-2 md:gap-3 backdrop-blur-md bg-slate-900/90 border border-slate-700`}
                 >
-                  <div
-                    className={`p-2 rounded-lg ${
-                      darkMode
-                        ? 'bg-green-500/20 text-green-400'
-                        : 'bg-green-400/20 text-green-500'
-                    }`}
-                  >
-                    <Server size={24} />
+                  <div className="p-1.5 md:p-2 rounded-lg bg-green-500/20 text-green-400">
+                    <Server size={isMobile ? 18 : 24} />
                   </div>
                   <div>
-                    <div className="text-sm font-bold">Backend</div>
-                    <div className={`text-xs ${theme.textSecondary}`}>
-                      Node.js Master
-                    </div>
+                    <div className="text-xs md:text-sm font-bold">Backend</div>
+                    <div className="text-xs text-slate-400">Node.js Master</div>
                   </div>
                 </motion.div>
               </div>
